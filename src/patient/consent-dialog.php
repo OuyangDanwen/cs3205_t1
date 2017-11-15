@@ -41,16 +41,34 @@
             $consents_list = $consents_list_json->consents;
             for ($i = 0; $i < count($consents_list); $i++) {
                 $consent = $consents_list[$i];
+                $therapist_id = $consent->uid;
                 $therapist_name = $consent->firstname . " " . $consent->lastname;
 
                 $checked_status = "";
                 if ($consent->status) {
                     $checked_status = "checked";
                 }
+
+                $therapists_list_json = json_decode(ssl::get_content(parse_ini_file($_SERVER['DOCUMENT_ROOT']."/../misc.ini")['server4'].'api/team1/treatment/patient/' . $result->uid . '/true'));
+                if (isset($therapists_list_json->treatments)) {
+                    $therapists_list = $therapists_list_json->treatments;
+                    for ($i = 0; $i < count($therapists_list); $i++) {
+                        if ($therapists_list[$i]->therapistId === $therapist_id) {
+                            $treatment_id = $therapists_list[$i]->id;
+                        }
+                    }
+                }
+                $treatment = json_decode(ssl::get_content(parse_ini_file($_SERVER['DOCUMENT_ROOT']."/../misc.ini")['server4'].'api/team1/treatment/' . $treatment_id)); 
+                
+                $disabled_status = "";
+                if ($treatment->currentConsent) {
+                    $disabled_status = "disabled";
+                }
+                
                 
                 echo "<tr>";
                 echo "<td style='text-align:center'>" . htmlspecialchars($therapist_name) . "</td>";
-                echo "<td style='text-align:center'><input type='checkbox' class='setconsent' value='" . $consent->consentId . "' " . $checked_status . "/></td>";
+                echo "<td style='text-align:center'><input type='checkbox' class='setconsent' value='" . $consent->consentId . "' " . $checked_status . " " . $disabled_status . "/></td>";
                 echo "</tr>";
             }
         }
