@@ -2,6 +2,7 @@
 	//validate.php: Checks submitted form values and react accordingly.
 	include_once $_SERVER["DOCUMENT_ROOT"] . '/util/jwt-admin.php';
 	include_once $_SERVER["DOCUMENT_ROOT"] . '/util/ssl.php';
+	include_once $_SERVER["DOCUMENT_ROOT"] . '/util/csrf.php';
 	
 	WebToken::verifyToken($_COOKIE["jwt"]);
 	
@@ -1005,6 +1006,7 @@
 			//Retrieve Current info Again
 		    if (strpos($_SESSION['editUserID'], '/') !== false) {
 		        Log::recordTX($uid, "Error", "Unrecognised uid: " . $_SESSION['editUserID']);
+				unset($_SESSION['editUserID']);
 		        header('HTTP/1.0 400 Bad Request.');
 		        die();
 		    }
@@ -1278,6 +1280,8 @@
 				if ($decodeEdit->result == 1) {
 					$_SESSION['editUserSuccess'] = TRUE;
 				}
+				
+				unset($_SESSION['editUserID']);
 				echo "<script>window.location = 'console.php?navi=edit'</script>";
 				exit();	
 			}
