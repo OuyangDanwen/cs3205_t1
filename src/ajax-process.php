@@ -56,16 +56,10 @@
         }
         CSRFToken::deleteToken($_POST['csrf']);
         updateConsentStatus($_POST['consentChanges']);
-    }
-    if (isset($_POST['treatmentId']) && isset($_POST['currentConsentSetting']) && isset($_POST['futureConsentSetting'])) {
-        $csrf = CSRFToken::getToken($_POST['csrf']);
-        if (isset($csrf->result) || $csrf->expiry < time() || $csrf->description != "updateConsentSettings" || $csrf->uid != $jwt_result->uid) {
-            Log::recordTX($jwt_result->uid, "Warning", "Invalid csrf when updating consent settings");
-            header('HTTP/1.0 400 Bad Request.');
-            die();
+
+        if (isset($_POST['treatmentId']) && isset($_POST['currentConsentSetting']) && isset($_POST['futureConsentSetting'])) {
+            echo updateDefaultConsentSettings($_POST['treatmentId'], $_POST['currentConsentSetting'], $_POST['futureConsentSetting']);
         }
-        CSRFToken::deleteToken($_POST['csrf']);
-        echo updateDefaultConsentSettings($_POST['treatmentId'], $_POST['currentConsentSetting'], $_POST['futureConsentSetting']);
     }
 
     // Misc
