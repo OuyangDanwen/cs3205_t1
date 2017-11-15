@@ -1,6 +1,7 @@
 <?php
 
     include_once '../util/ssl.php';
+    include_once '../util/csrf.php';
     include_once '../util/jwt.php';
     $result = WebToken::verifyToken($_COOKIE["jwt"]);
     $user_type = $result->istherapist ? "therapist" : "patient";
@@ -136,7 +137,7 @@
                                     type: "POST",
                                     url: "../ajax-process.php",
                                     data: { "consentChanges": consentChanges,
-                                            "csrf": "<?php include_once $_SERVER['DOCUMENT_ROOT']."/util/csrf.php"; echo CSRFToken::generateToken($result->uid, "updateConsentSettings");?>" }
+                                            "csrf": "<?php echo CSRFToken::generateToken($result->uid, "updateConsentSettings") ?>" }
                                 });
                                 $(this).dialog('close');
                                 $('#acknowledgementDialog').dialog('open');
@@ -152,7 +153,7 @@
                             'consent-dialog.php', 
                             { 
                                 "recordId": $(this).data('recordId'),
-                                "csrf": "<?php include_once $_SERVER['DOCUMENT_ROOT']."/util/csrf.php"; echo CSRFToken::generateToken($result->uid, "viewConsentDialog");?>"  
+                                "csrf": "<?php echo CSRFToken::generateToken($result->uid, "viewConsentDialog") ?>"  
                             }
                         );
                     }

@@ -1,6 +1,7 @@
 <?php
 
     include_once '../util/ssl.php';
+    include_once '../util/csrf.php';
     include_once '../util/jwt.php';
     $result = WebToken::verifyToken($_COOKIE["jwt"]);
     $user_json = json_decode(ssl::get_content(parse_ini_file($_SERVER['DOCUMENT_ROOT']."/../misc.ini")['server4'].'api/team1/user/uid/' . $result->uid));
@@ -128,7 +129,7 @@
                                     type: "POST",
                                     url: "../ajax-process.php",
                                     data: { "attachRecords": attachRecordsList,
-                                            "csrf": "<?php include_once $_SERVER['DOCUMENT_ROOT']."/util/csrf.php"; echo CSRFToken::generateToken($result->uid, "attachRecords");?>" }
+                                            "csrf": "<?php echo CSRFToken::generateToken($result->uid, "attachRecords");?>" }
                                 }).done(function(response) {
                                     $('#attachedRecordsTable').html(response);
 
@@ -154,7 +155,7 @@
                                 "patientId": $(this).data('patientId'), 
                                 "therapistId": $(this).data('therapistId'),
                                 "attachRecordsList": $(this).data('attachRecordsList'),
-                                "csrf": "<?php include_once $_SERVER['DOCUMENT_ROOT']."/util/csrf.php"; echo CSRFToken::generateToken($result->uid, "viewRecordsDialog");?>"
+                                "csrf": "<?php echo CSRFToken::generateToken($result->uid, "viewRecordsDialog") ?>"
                             }
                         );
                     }

@@ -18,11 +18,10 @@
 
     $csrf = CSRFToken::getToken($_POST['csrf']);
     if (isset($csrf->result) || $csrf->expiry < time() || $csrf->description != "viewTherapistsListDialog" || $csrf->uid != $result->uid) {
-        Log::recordTX($jwt_result->uid, "Warning", "Invalid csrf when viewing therapist list dialog");
+        Log::recordTX($result->uid, "Warning", "Invalid csrf when viewing therapist list dialog");
         header('HTTP/1.0 400 Bad Request.');
         die();
     }
-    CSRFToken::deleteToken($_POST['csrf']);
 
     if ($patientId === "0") {
         $therapist_list = json_decode(ssl::get_content(parse_ini_file($_SERVER['DOCUMENT_ROOT']."/../misc.ini")['server4']."api/team1/user/therapists"))->users;

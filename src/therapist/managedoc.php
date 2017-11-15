@@ -420,7 +420,7 @@
                                 type: "POST",
                                 url: "../ajax-process.php",
                                 data: { "therapistArray": therapistArray,
-                                        "csrf": "<?php include_once $_SERVER['DOCUMENT_ROOT']."/util/csrf.php"; echo CSRFToken::generateToken($result->uid, "shareDocument");?>" }
+                                        "csrf": "<?php echo CSRFToken::generateToken($result->uid, "shareDocument");?>" }
                             }).done(function(response) {
                                 alert(response);
                             });
@@ -442,7 +442,7 @@
                             "patientId": $(this).data('patientId'), 
                             "therapistId": $(this).data('therapistId'),
                             "rid": $(this).data('rid'),
-                            "csrf": "<?php include_once $_SERVER['DOCUMENT_ROOT']."/util/csrf.php"; echo CSRFToken::generateToken($result->uid, "viewTherapistsListDialog");?>"
+                            "csrf": "<?php echo CSRFToken::generateToken($result->uid, "viewTherapistsListDialog");?>"
                         }
                     );
                 }
