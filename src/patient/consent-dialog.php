@@ -16,6 +16,16 @@
         die();
     }
     CSRFToken::deleteToken($_POST['csrf']);
+
+    $therapists_list_json = json_decode(ssl::get_content(parse_ini_file($_SERVER['DOCUMENT_ROOT']."/../misc.ini")['server4'].'api/team1/treatment/patient/' . $result->uid . '/true'));
+    if (isset($therapists_list_json->treatments)) {
+        $therapists_list = $therapists_list_json->treatments;
+    }
+    if (isset($therapists_list)) {
+        $num_therapists = count($therapists_list);
+    } else {
+        $num_therapists = 0;
+    }
     
     // Retrieves the user JSON object based on the uid
     function getJsonFromUid($uid) {
@@ -49,13 +59,9 @@
                     $checked_status = "checked";
                 }
 
-                $therapists_list_json = json_decode(ssl::get_content(parse_ini_file($_SERVER['DOCUMENT_ROOT']."/../misc.ini")['server4'].'api/team1/treatment/patient/' . $result->uid . '/true'));
-                if (isset($therapists_list_json->treatments)) {
-                    $therapists_list = $therapists_list_json->treatments;
-                    for ($i = 0; $i < count($therapists_list); $i++) {
-                        if ($therapists_list[$i]->therapistId === $therapist_id) {
-                            $treatment_id = $therapists_list[$i]->id;
-                        }
+                for ($j = 0; $j < $num_therapists; $j++) {
+                    if ($therapists_list[$j]->therapistId === $therapist_id) {
+                        $treatment_id = $therapists_list[$j]->id;
                     }
                 }
                 $treatment = json_decode(ssl::get_content(parse_ini_file($_SERVER['DOCUMENT_ROOT']."/../misc.ini")['server4'].'api/team1/treatment/' . $treatment_id)); 
@@ -64,7 +70,6 @@
                 if ($treatment->currentConsent) {
                     $disabled_status = "disabled";
                 }
-                
                 
                 echo "<tr>";
                 echo "<td style='text-align:center'>" . htmlspecialchars($therapist_name) . "</td>";
